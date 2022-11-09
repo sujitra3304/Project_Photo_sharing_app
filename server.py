@@ -8,6 +8,11 @@ def homepage():
 
     return render_template('homepage.html')
 
+@app.route('/upload')
+def upload_photo():
+
+    return render_template('upload.html')
+
 
 if __name__ == '__main__':
     app.debug = True
