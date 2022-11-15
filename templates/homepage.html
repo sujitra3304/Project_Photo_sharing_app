@@ -1,20 +1,21 @@
-<!doctype html>
-<html>
-<head>
-  <title>Cloudinary</title>
+{% extends 'base.html' %}
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+{% block title %}Cloudinary Demo Homepage{% endblock %}
 
-  <link rel="stylesheet" href="/static/css/party.css">
-</head>
-<body>
-  
+{% block content %}
+
+<div class="container">
     <h1>
       This is homepage
     </h1>
-    <h2>Upload photo</h2>
-    
-</body>
-</html>
+    <h2><a href="/upload">Upload photos</a></h2>
+
+    <div> 
+      <h2><a href="/register"> Create Login</a></h2>
+    </div>
+    <div> 
+      <h2><a href="/login">Login</a></h2>
+    </div>
+  </div>    
+
+{% endblock %}
