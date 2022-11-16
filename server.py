@@ -1,5 +1,7 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from forms import Registration, Login
+from model import db, User, Photo, Like, Comment
+import crud
 import cloudinary.uploader
 import os
 
@@ -10,13 +12,28 @@ CLOUD_NAME="sujitra"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '4569740e2dac685f61cbd9085d0cdb16'
-
-@app.route("/register")
+# from model import db, User, Photo, Like, Comment
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     form = Registration()
+    if form.validate_on_submit():
+        # user = User(email=form.email.data,password=form.password.data,fname=form.fname.data, lname=form.lname.data)
+        # db.session.add(user)
+        # db.session.commit()
+        email=form.email.data
+        password=form.password.data
+        fname=form.fname.data
+        lname=form.lname.data
+
+        user = crud.create_user(email,password,fname,lname)
+        db.session.add(user)
+        db.session.commit(user)
+
+        flash(f'Account created!', 'success')
+        return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-@app.route("/login")
+@app.route("/login" , methods=['GET', 'POST'])
 def login():
     form = Login()
     return render_template('login.html', title='Login', form=form)

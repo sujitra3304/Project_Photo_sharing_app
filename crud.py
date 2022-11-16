@@ -6,7 +6,7 @@ def create_user(email, password, fname, lname):
     """Create and return a new user."""
 
     user = User(email=email, password=password, fname=fname,lname=lname)
-
+    
     return user
 
 def create_photo(url):
@@ -26,3 +26,8 @@ def create_comment(comment,user_id,photo_id):
     comment = Comment(comment=comment, user_id=user_id,photo_id=photo_id)
 
     return comment
+
+# if __name__ == "__main__":
+#     from server import app
+
+#     connect_to_db(app)
