@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 from forms import Registration, Login
-from model import db, User, Photo, Like, Comment
+from model import connect_to_db, db, User, Photo, Like, Comment
 import crud
 import cloudinary.uploader
 import os
@@ -27,7 +27,7 @@ def register():
 
         user = crud.create_user(email,password,fname,lname)
         db.session.add(user)
-        db.session.commit(user)
+        db.session.commit()
 
         flash(f'Account created!', 'success')
         return redirect(url_for('login'))
@@ -82,5 +82,7 @@ def add_user_img_record(img_url):
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0')
+    # app.debug = True
+    connect_to_db(app)
+    app.run(host='0.0.0.0',debug=True)
+   
