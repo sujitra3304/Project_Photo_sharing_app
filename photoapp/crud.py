@@ -1,17 +1,18 @@
 """CRUD for Cloudinary"""
 
-from model import db, User, Photo, Like, Comment, connect_to_db
+from photoapp.model import db, User, Photo, Like, Comment
 
-def create_user(email, password, fname, lname):
+def create_user(username, email, password, fname, lname):
     """Create and return a new user."""
 
-    user = User(email=email, password=password, fname=fname,lname=lname)
+    user = User(username=username,email=email, password=password, fname=fname,lname=lname)
     
     return user
 
-def create_photo(url):
+def create_photo(user_id, url,caption=None,title=None):
     """Create photo"""
-    photo = Photo(url=url)
+    photo = Photo(user_id=user_id,url=url,title=title, caption=caption)
+
 
     return photo
 

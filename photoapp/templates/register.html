@@ -9,15 +9,29 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Create Account</legend>
                 <div class="form-group">
-                    {{form.email.label(class="form-control-label")}}
+                    {{form.username.label(class="form-control-label")}}    
+                    {{form.username(class="form-control form-control-lg")}}
+                   </div>
+                <div class="form-group">
+                    {{form.email.label(class="form-control-label")}}    
                     {{form.email(class="form-control form-control-lg")}}
-                </div>
+                   </div>
                 <div class="form-group">
                     {{form.password.label(class="form-control-label")}}
                     {{form.password(class="form-control form-control-lg")}}
+                </div>
                 <div class="form-group">
                     {{form.confirm_password.label(class="form-control-label")}}
-                    {{form.confirm_password(class="form-control form-control-lg")}}
+                    {% if form.password.errors %}
+                        {{ form.password(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{form.confirm_password(class="form-control form-control-lg")}}
+                    {% endif %}    
                 </div>
                 <div class="form-group">
                     {{form.fname.label(class="form-control-label")}}
@@ -32,5 +46,10 @@
                 </div>
             </div>
         </form>
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
+        </small>
     </div>
 {% endblock content %}

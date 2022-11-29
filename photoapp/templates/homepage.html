@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Cloudinary Demo Homepage{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>
+      This is homepage
+    </h1>
+    <h2><a href="/upload">Upload photos</a></h2>
+
+  <div class="navbar-nav">
+    {% if current_user.is_authenticated %}
+      <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+      <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+      <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+      <a class="nav-item nav-link" href="{{ url_for('register') }}">Create Account</a>
+    {% endif %}
+    {% for photo in photos %}
+      <h3> Posted by: {{photo.user.username }}</h3>
+      <a href="{{ url_for('photo', photo_id=photo.id)}}" 
+        
+      </a>
+      <img src = "{{photo.url}}">
+    {% endfor %} 
+  </div>
+  
+</div>
+    
+{% endblock %}

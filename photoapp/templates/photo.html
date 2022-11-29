@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Photo{% endblock title%}
+
+{% block content %}
+    
+      <div class="media-body">
+            <div class="article-metadata">
+            <a class="mr-2" href="#">{{ photo.user.username }}</a>
+            <br>
+            <img src = "{{photo.url}}">
+        
+        </div>
+{% endblock %}
+
+<!-- <div class ="content-section">
+            <form method="POST" action="">
+                {{form.hidden_tag()}}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Comment</legend>
+                    <div class="form-group">
+                        {{form.comment.label(class="form-control-label")}}    
+                        {{form.comment(class="form-control form-control-lg")}}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+    
+            </form>  -->

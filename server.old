@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
-from forms import Registration, Login
-from model import connect_to_db, db, User, Photo, Like, Comment
-import crud
+from cloudinary.forms import Registration, Login
+from cloudinary.model import connect_to_db, db, User, Photo, Like, Comment
+from flask_login import  LoginManager, current_user, login_user
+from flask_bcrypt import Bcrypt
+import cloudinary.crud
 import cloudinary.uploader
 import os
 
@@ -11,21 +13,29 @@ CLOUD_NAME="sujitra"
 
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
+
+
 app.config['SECRET_KEY'] = '4569740e2dac685f61cbd9085d0cdb16'
-# from model import db, User, Photo, Like, Comment
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    
     form = Registration()
     if form.validate_on_submit():
-        # user = User(email=form.email.data,password=form.password.data,fname=form.fname.data, lname=form.lname.data)
-        # db.session.add(user)
-        # db.session.commit()
+        
+        profile_name=form.profile_name.data
         email=form.email.data
-        password=form.password.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         fname=form.fname.data
         lname=form.lname.data
 
-        user = crud.create_user(email,password,fname,lname)
+        user = photocloud.crud.create_user(profile_name,email,hashed_password,fname,lname)
         db.session.add(user)
         db.session.commit()
 
@@ -35,7 +45,17 @@ def register():
 
 @app.route("/login" , methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('homepage'))
     form = Login()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('homepage'))
+        else:
+                flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 
@@ -79,6 +99,9 @@ def add_user_img_record(img_url):
     print("\n".join([f"{'*' * 20}", "SAVE THIS url to your database!!",
                     img_url, f"{'*' * 20}" ]))
 
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.get(user_id)
 
 
 if __name__ == '__main__':
