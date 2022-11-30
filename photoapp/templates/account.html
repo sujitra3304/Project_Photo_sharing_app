@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>{{ current_user.user_id}}</h1>
+    
+    <h1>{{ user.username }}</h1>
     <article class="media content-section">
         <div class="media-body">
           <div class="article-metadata">
-            <a class="mr-2" href="#">{{ photo.user.user_id }}</a>
-            <img class="article-title"> src="{{ photo.url }}">
+            <a class="mr-2" href="#">{{ photos.user_id }}</a>
+            {% for photo in photos%}
+            <img src = "{{photo.url}}">
+            {% endfor %}
         
 
 {% endblock %}

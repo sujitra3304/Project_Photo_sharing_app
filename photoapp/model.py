@@ -34,6 +34,8 @@ class User(db.Model, UserMixin):
                       nullable=False)
 
     photo=db.relationship("Photo", back_populates="user")
+    comment=db.relationship("Comment", back_populates="user")
+    like=db.relationship("Like", back_populates="user")
     
     def __repr__(self):
         return f'<User user_id={self.id} username={self.username} email={self.email} first_name={self.fname} last_name={self.lname}>'
@@ -56,7 +58,7 @@ class Photo(db.Model):
     user=db.relationship("User", back_populates="photo")
 
     def __repr__(self):
-        return f'<Photo photo_id={self.id} url={self.url} caption={self.caption} title={self.title} user_id={self.user_id} date={self.date}>'
+        return f'<Photo photo_id={self.id} url={self.url} caption={self.caption} title={self.title} user_id={self.user_id} date={self.date} username={self.user.username}>'
 
 
 class Like(db.Model):
@@ -69,6 +71,7 @@ class Like(db.Model):
     user_id = db.Column(db.Integer,
                          db.ForeignKey("users.id"))
     like_date = db.Column(db.Date, default=datetime.utcnow)
+    user=db.relationship("User", back_populates="like")
 
     def __repr__(self):
         return f'<Like photo_id = {self.photo_id}, user_id={self.user_id}, like_date={self.like_date}>'
@@ -88,6 +91,7 @@ class Comment(db.Model):
     comment = db.Column(db.String(300), 
                         nullable = False)
     comment_date = db.Column(db.Date, default=datetime.utcnow)
+    user = db.relationship("User", back_populates="comment")
 
     def __repr__(self):
         return f'<Comment comment_id = {self.id} photo_id={self.photo_id}, user_id={self.user_id}, comment={self.comment}, comment_date={self.comment_date}>'

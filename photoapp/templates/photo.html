@@ -4,27 +4,31 @@
 
 {% block content %}
     
-      <div class="media-body">
-            <div class="article-metadata">
-            <a class="mr-2" href="#">{{ photo.user.username }}</a>
-            <br>
-            <img src = "{{photo.url}}">
-        
+<div class ="content-section">
+        <div class="article-metadata">
+        <a class="mr-2" href="#">{{ photo.user.username }}</a>
+        <br>
+        <img src = "{{photo.url}}">
+    
         </div>
+        <div> 
+            <h1>Comments</h1>
+            {% for comment in comments %}
+            <p>{{comment.user.username}}:<br> {{comment.comment}}</p>
+            <p>{{comment.comment_date}}</p>
+            {% endfor %}
+        </div>
+        <form method="POST" action="{{url_for('add_comment', photo_id=photo.id)}}">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                    <div class="form-group">
+                        {{ form.comment.label(class="form-control-label") }}
+                        {{ form.comment(class="form-control form-control-lg is-invalid") }}
+                        {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+            </fieldset>
+            
+        </form>
+</div>
 {% endblock %}
 
-<!-- <div class ="content-section">
-            <form method="POST" action="">
-                {{form.hidden_tag()}}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Comment</legend>
-                    <div class="form-group">
-                        {{form.comment.label(class="form-control-label")}}    
-                        {{form.comment(class="form-control form-control-lg")}}
-                    </div>
-                </fieldset>
-                <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
-                </div>
-    
-            </form>  -->

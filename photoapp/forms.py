@@ -33,6 +33,6 @@ class Login(FlaskForm):
     submit = SubmitField('Login')
 
 class AddComment(FlaskForm):
-    comment = StringField('Comments')
-    submit = SubmitField('Add Comment')
+    comment = StringField('Add Comment')
+    submit = SubmitField('Submit')
     

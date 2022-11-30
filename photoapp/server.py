@@ -21,6 +21,7 @@ import cloudinary.uploader
 # from model import db, User, Photo, Like, Comment
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    """Create new user"""
     if current_user.is_authenticated:
         return redirect(url_for('homepage'))
     
@@ -29,7 +30,6 @@ def register():
         username=form.username.data
         email=form.email.data
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        # password=form.password.data
         fname=form.fname.data
         lname=form.lname.data
 
@@ -43,6 +43,8 @@ def register():
 
 @app.route("/login" , methods=['GET', 'POST'])
 def login():
+    """handle user login"""
+
     if current_user.is_authenticated:
         return redirect(url_for('homepage'))
     form = Login()
@@ -110,26 +112,47 @@ def add_user_img_record(img_url,caption=None, title=None):
 
 @app.route("/logout")
 def logout():
+    """loging out user"""
     logout_user()
     return redirect(url_for('homepage'))
 
-@app.route("/account")
+@app.route("/account/<user_id>")
 @login_required
-def account():
-    photos = Photo.query.filter_by(Photo.user.email==current_user.email).all()
+def account(user_id):
+    """displays username and photos that were posted by this user""" 
 
-    return render_template('account.html', title='Account', photos=photos)
+    user = User.query.get(user_id)
+    # photos = Photo.query.all()
+    photos= Photo.query.filter(Photo.user_id==user_id).all()
+
+    return render_template('account.html', title='Account', photos=photos,user=user)
 
 @app.route("/photo/<int:photo_id>")
 def photo(photo_id):
+    """show selected photo, likes, and comments for this particular photo id"""
     photo = Photo.query.get_or_404(photo_id)
-    return render_template('photo.html', photo=photo)
+    comments = Comment.query.filter(Comment.photo_id==photo_id).all()
+    form=AddComment()
+    return render_template('photo.html', photo=photo, form=form,comments=comments)
 
-@app.route("/add_comment/<int:photo_id>")
+@app.route("/add_comment/<int:photo_id>", methods=['GET','POST'])
 @login_required
 def add_comment(photo_id):
     form=AddComment()
-    pass
+    if form.validate_on_submit():
+        
+        photo = Photo.query.get_or_404(photo_id)
+        comment = form.comment.data
+        user_id=current_user.id
+        photo_id = photo_id
+        next_page = request.args.get('next')
+        new_comment = photoapp.crud.create_comment(comment,user_id, photo_id)
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(next_page) if next_page else redirect(url_for('photo',photo_id=photo_id))
+    return render_template('photo.html', title='Photo',form=form,photo=photo,photo_id=photo_id)
+    
+   
 
 
 
