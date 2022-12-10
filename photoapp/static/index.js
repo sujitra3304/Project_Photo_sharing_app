@@ -61,13 +61,7 @@ function deleteComment(evt) {
 })
 }
 
-const followBtns = document.querySelectorAll("[id^='follow-btn']")
 
-for (const followBtn of followBtns){
-    
-  followBtn.addEventListener('click', followUser)
-
-}
 
 function followUser (evt) {
   const followBtnsStatuses = document.querySelectorAll(".followBtnStatus")
@@ -81,15 +75,22 @@ function followUser (evt) {
         if (data["followed"] === true) {
           for (const followBtnStatus of followBtnsStatuses)
 
-          followBtnStatus.className = "fa-solid fa-user-plus"          
+          followBtnStatus.className = "fa-solid fa-user-minus"          
         } 
         else 
         {
           for (const followBtnStatus of followBtnsStatuses)
-          followBtnStatus.className = "fa-solid fa-user-minus";
+          followBtnStatus.className = "fa-solid fa-user-plus";
           
         }
         
       })
+
+}
+const followBtns = document.querySelectorAll("[id^='follow-btn']")
+
+for (const followBtn of followBtns){
+    
+  followBtn.addEventListener('click', followUser)
 
 }
