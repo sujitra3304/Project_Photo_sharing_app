@@ -35,7 +35,7 @@ class User(db.Model, UserMixin):
 
     photo=db.relationship("Photo", back_populates="user")
     comment=db.relationship("Comment", back_populates="user")
-    like=db.relationship("Like", back_populates="user")
+    likes=db.relationship("Like", back_populates="user")
     
     def __repr__(self):
         return f'<User user_id={self.id} username={self.username} email={self.email} first_name={self.fname} last_name={self.lname}>'
@@ -56,9 +56,11 @@ class Photo(db.Model):
                     default=datetime.utcnow)
 
     user=db.relationship("User", back_populates="photo")
+    likes=db.relationship("Like", back_populates="photo")
+    comment=db.relationship("Comment", back_populates="photo")
 
     def __repr__(self):
-        return f'<Photo photo_id={self.id} url={self.url} caption={self.caption} title={self.title} user_id={self.user_id} date={self.date} username={self.user.username}>'
+        return f'<Photo photo_id={self.id} url={self.url} caption={self.caption} title={self.title} user_id={self.user_id} date={self.date} username={self.user.username} comments={self.comment}>'
 
 
 class Like(db.Model):
@@ -71,7 +73,8 @@ class Like(db.Model):
     user_id = db.Column(db.Integer,
                          db.ForeignKey("users.id"))
     like_date = db.Column(db.Date, default=datetime.utcnow)
-    user=db.relationship("User", back_populates="like")
+    user=db.relationship("User", back_populates="likes")
+    photo=db.relationship("Photo", back_populates="likes")
 
     def __repr__(self):
         return f'<Like photo_id = {self.photo_id}, user_id={self.user_id}, like_date={self.like_date}>'
@@ -92,6 +95,7 @@ class Comment(db.Model):
                         nullable = False)
     comment_date = db.Column(db.Date, default=datetime.utcnow)
     user = db.relationship("User", back_populates="comment")
+    photo = db.relationship("Photo", back_populates="comment")
 
     def __repr__(self):
         return f'<Comment comment_id = {self.id} photo_id={self.photo_id}, user_id={self.user_id}, comment={self.comment}, comment_date={self.comment_date}>'
@@ -106,7 +110,9 @@ class Follow(db.Model):
     following_user_id = db.Column(db.Integer,
                         db.ForeignKey("users.id"))
 
-
+    def __repr__(self):
+        return f'<Follow user_id = {self.user_id} following_user_id = {self.following_user_id}>'
+        
 def connect_to_db(flask_app, db_uri="postgresql:///cloudinary", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo

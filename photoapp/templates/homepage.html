@@ -4,30 +4,32 @@
 
 {% block content %}
 
-<div class="container">
-    <h1>
-      This is homepage
-    </h1>
-    <h2><a href="/upload">Upload photos</a></h2>
-
-  <div class="navbar-nav">
-    {% if current_user.is_authenticated %}
-  
-      <a class="nav-item nav-link" href="{{ url_for('account',user_id=current_user.id)}}">Account</a>
-      <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-      <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-      <a class="nav-item nav-link" href="{{ url_for('register') }}">Create Account</a>
-    {% endif %}
+  <div>
     {% for photo in photos %}
-      <h3> Posted by: {{photo.user.username }}</h3>
-      <a href="{{ url_for('photo', photo_id=photo.id)}}" 
+      <p> Posted by: {{photo.user.username }} {{photo.user_id}}
+        {% if current_user.id != photo.user.id and photo.user_id not in following_list %}
+        <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
+        {% elif current_user.id != photo.user.id and photo.user_id in following_list %}
+        <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
+        {% endif %}
+      </p> 
+      
+      
+      <div>
+        <a href="{{ url_for('photo', photo_id=photo.id)}}" 
+        </a>
         
+        <img style = width:180px; class="home-photos" src ="{{photo.url}}">
+      </div>
+      <br>
+      <div>{{photo.likes|length}} Likes</div> 
+      <a href="{{ url_for('photo', photo_id=photo.id)}}"
+      <div>{{photo.comment|length}} Comments</div>
       </a>
-      <img src = "{{photo.url}}">
+      
     {% endfor %} 
   </div>
   
-</div>
+
     
 {% endblock %}

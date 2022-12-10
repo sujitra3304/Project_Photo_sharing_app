@@ -1,11 +1,12 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, flash,session
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash,session,abort
 from photoapp import app, db, bcrypt
 from photoapp.forms import Registration, Login,AddComment
-from photoapp.model import User, Photo, Like, Comment
+from photoapp.model import User, Photo, Like, Comment, Follow
 from flask_login import login_user, current_user, logout_user, login_required
 from photoapp import bcrypt
 import photoapp.crud
 import cloudinary.uploader
+from sqlalchemy.sql import text
 # import os
 
 # CLOUDINARY_KEY = os.environ['CLOUDINARY_KEY']
@@ -61,10 +62,23 @@ def login():
 
 
 @app.route('/')
+@login_required
 def homepage():
     """Show homepage."""
     photos = Photo.query.all()
-    return render_template('homepage.html', photos=photos)
+    following = Follow.query.filter_by(user_id=current_user.id).all()
+    following_list = []
+    for follow in following:
+        following_list.append(follow.following_user_id)
+        print (type(following_list))
+    print(f'HOME ROUTE FOLLOWING LIST {following_list}')
+
+   
+    
+    
+    
+    
+    return render_template('homepage.html', photos=photos, following = following, following_list=following_list)
 
 @app.route('/upload')
 def upload_photo():
@@ -122,18 +136,32 @@ def account(user_id):
     """displays username and photos that were posted by this user""" 
 
     user = User.query.get(user_id)
-    # photos = Photo.query.all()
+    
     photos= Photo.query.filter(Photo.user_id==user_id).all()
-
-    return render_template('account.html', title='Account', photos=photos,user=user)
+    if current_user.is_authenticated:
+        return render_template('account.html', title='Account', photos=photos,user=user)
+    else:
+         return redirect(url_for('login'))
 
 @app.route("/photo/<int:photo_id>")
 def photo(photo_id):
     """show selected photo, likes, and comments for this particular photo id"""
-    photo = Photo.query.get_or_404(photo_id)
-    comments = Comment.query.filter(Comment.photo_id==photo_id).all()
-    form=AddComment()
-    return render_template('photo.html', photo=photo, form=form,comments=comments)
+    if current_user.is_authenticated:
+        photo = Photo.query.get_or_404(photo_id)
+        comments = Comment.query.filter(Comment.photo_id==photo_id).all()
+        likes = Like.query.filter(Like.user_id==current_user.id, Like.photo_id==photo_id).first()
+        following = Follow.query.filter_by(user_id=current_user.id, following_user_id=photo.user_id).all()
+        form=AddComment()
+        print(likes)
+        print(f'PHOTO ROUTE FOLLOWING{following}')
+        # print(likes)
+        # print(current_user)
+        
+        return render_template('photo.html', photo=photo, form=form,comments=comments,likes=likes, current_user=current_user,following=following)
+    
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route("/add_comment/<int:photo_id>", methods=['GET','POST'])
 @login_required
@@ -153,7 +181,87 @@ def add_comment(photo_id):
     return render_template('photo.html', title='Photo',form=form,photo=photo,photo_id=photo_id)
     
    
+@app.route("/like/<photo_id>", methods=['GET','POST'])
+@login_required
+def like(photo_id):
+    """To toggle the like button and update Like table if user has like or unlike the photo"""
 
+    photo_id=int(photo_id)
+    print(type(photo_id))
+    print (f'************{photo_id}')
+    
+    photo = Photo.query.filter_by(id=photo_id).first()
+    like = Like.query.filter_by(user_id=current_user.id, photo_id=photo_id).first()
+    liked = None
+    if not photo:
+        return jsonify({'error': 'Photo does not exist.'}, 400)
+    elif like:
+        db.session.delete(like)
+        db.session.commit()
+        liked = "False"
+    else:
+        like = Like(user_id=current_user.id, photo_id=photo_id)
+        db.session.add(like)
+        db.session.commit()
+        liked = "True"
+    print (like)
+    print (liked)
+    return jsonify({"likes": len(photo.likes), "liked": liked})
+
+@app.route("/delete_photo/<photo_id>", methods=['POST'])
+@login_required
+def delete_photo(photo_id):
+    photo_id=int(photo_id)
+    photo = Photo.query.get_or_404(photo_id)
+    comments = Comment.query.filter(photo_id==photo_id).all()
+    likes = Like.query.filter(photo_id==photo_id).all()
+    print(f'########{photo}')
+    if photo.user.id != current_user.id:
+         abort(403)
+    
+    db.session.delete(photo)
+    for comment in comments:
+        db.session.delete(comment)
+    for like in likes:
+        db.session.delete(like)
+    db.session.commit()
+    flash('Your post has been deleted!', 'success')
+    return redirect(url_for('homepage'))
+
+@app.route("/delete_comment/<comment_id>", methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment_id = int(comment_id)
+    comment = Comment.query.get_or_404(comment_id)
+    
+    
+    if comment.user.id != current_user.id:
+         abort(403)
+    
+    db.session.delete(comment)
+    db.session.commit()
+    flash('Your post has been deleted!', 'success')
+    return redirect(url_for('homepage'))
+
+@app.route("/follow/<following_user_id>", methods=['POST'])
+@login_required
+def follow_user(following_user_id):
+    # print(f'FOLLOWING USER ID {following_user_id}')
+    follow = Follow.query.filter_by(following_user_id=following_user_id).first()
+    followed = None
+
+    if not follow:
+        follow = Follow(user_id=current_user.id,following_user_id=following_user_id)
+        db.session.add(follow)
+        db.session.commit()
+        followed = True
+    else:
+        db.session.delete(follow)
+        db.session.commit()
+        followed = False
+
+    print(f'FOLLOWED {followed} TYPE(type({followed}))')
+    return jsonify({"followed": followed})
 
 
 
@@ -162,3 +270,8 @@ def add_comment(photo_id):
 #     connect_to_db(app)
 #     app.run(host='0.0.0.0',debug=True)
    
+ 
+
+
+
+

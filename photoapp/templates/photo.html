@@ -6,18 +6,50 @@
     
 <div class ="content-section">
         <div class="article-metadata">
-        <a class="mr-2" href="#">{{ photo.user.username }}</a>
+        <div class="user-name">
+        <a class="mr-2" href="{{url_for('account',user_id=photo.user.id)}}">{{ photo.user.username }} 
+            
+        </a>
+        {% if following and current_user.id != photo.user.id%}
+        <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
+        {% elif not following and current_user.id %}
+        <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
+        {% endif %}
+        
+        </div>
         <br>
-        <img src = "{{photo.url}}">
+        <img style="width:400px;" src = "{{photo.url}}">
     
+        </div>
+        <br>
+        {% if photo.user == current_user %}
+        <i class="fa-solid fa-trash-can"
+            id="delete-photo"></i>
+        {% endif %} 
+        <div>
+            <span id="likes-count">
+            {{ photo.likes|length }}</span> 
+            {% if likes %}    
+            <i class="fas fa-thumbs-up"
+                id="like-button"></i>
+            {% else %}
+            <i class="far fa-thumbs-up" 
+                id="like-button"></i>
+            {% endif %}    
         </div>
         <div> 
             <h1>Comments</h1>
             {% for comment in comments %}
-            <p>{{comment.user.username}}:<br> {{comment.comment}}</p>
+            <p>{{comment.user.username}}:<br> {{comment.comment}} 
+                {% if comment.user_id == current_user.id%}
+                <button type="button" class="btn btn-link btn-sm" id="delete-comment-{{comment.id}}">Delete</button>
+                {% endif %}
+            </p> 
+            
             <p>{{comment.comment_date}}</p>
             {% endfor %}
         </div>
+        
         <form method="POST" action="{{url_for('add_comment', photo_id=photo.id)}}">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
@@ -30,5 +62,11 @@
             
         </form>
 </div>
+<small class="text-muted">
+    Return to <a class="ml-2" href="{{ url_for('homepage') }}">Homepage</a>
+</small>
 {% endblock %}
 
+<!-- <form method="POST" action="/delete_photo/{{photo.id}}" >
+    <input class="btn btn-danger" type="submit" value="Delete Photo">    
+    </form> -->

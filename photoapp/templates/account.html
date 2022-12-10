@@ -7,8 +7,18 @@
           <div class="article-metadata">
             <a class="mr-2" href="#">{{ photos.user_id }}</a>
             {% for photo in photos%}
-            <img src = "{{photo.url}}">
+            <div>
+            <a href="{{ url_for('photo', photo_id=photo.id)}}" </a>
+            <img style = width:180px; src = "{{photo.url}}">
+            </div>
+
+            
+            <a href="{{ url_for('photo', photo_id=photo.id)}}"
+            <div>{{photo.comment|length}} Comments</div>
+            </a>
+            <div>{{photo.likes|length}} Likes</div>
+
             {% endfor %}
-        
+            
 
 {% endblock %}
