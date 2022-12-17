@@ -1,13 +1,27 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash,session,abort
-from photoapp import app, db, bcrypt
-from photoapp.forms import Registration, Login,AddComment
-from photoapp.model import User, Photo, Like, Comment, Follow, Location
-from flask_login import login_user, current_user, logout_user, login_required
-from photoapp import bcrypt
-import photoapp.crud
-import cloudinary.uploader
-from sqlalchemy.sql import text
-from photoapp import CLOUDINARY_KEY, CLOUDINARY_SECRET
+from flask_bcrypt import Bcrypt
+import os
+from forms import Registration, Login,AddComment
+from model import User, Photo, Like, Comment, Follow, Location, db, connect_to_db
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+import crud
+import cloudinary.uploader 
+
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '4569740e2dac685f61cbd9085d0cdb16'
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///cloudinary"
+
+
+CLOUDINARY_KEY = os.environ['CLOUDINARY_KEY']
+CLOUDINARY_SECRET = os.environ['CLOUDINARY_SECRET']
+CLOUD_NAME="sujitra"
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
+
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -23,7 +37,7 @@ def register():
         fname=form.fname.data
         lname=form.lname.data
 
-        user = photoapp.crud.create_user(username, email,hashed_password,fname,lname)
+        user = crud.create_user(username, email,hashed_password,fname,lname)
         db.session.add(user)
         db.session.commit()
         
@@ -75,6 +89,12 @@ def homepage():
     
     return render_template('homepage.html', photos=photos, following = following,
                             all_photos=all_photos, recommended_follows=recommended_follows)
+
+@login_manager.user_loader
+def load_user(id):
+
+    return User.query.get(id)
+
 
 @app.route('/upload_profile_pic')
 def upload_profile_pic():
@@ -132,7 +152,7 @@ def add_user_img_record(img_url,caption=None, title=None):
     user_id = current_user.id
     url=img_url
     print(f'URL {url}')
-    photo = photoapp.crud.create_photo(user_id, url ,title,caption)
+    photo = crud.create_photo(user_id, url ,title,caption)
     db.session.add(photo)
     db.session.commit()
     # print("\n".join([f"{'*' * 20}", "SAVE THIS url to your database!!",
@@ -190,7 +210,7 @@ def add_comment(photo_id):
         user_id=current_user.id
         photo_id = photo_id
         next_page = request.args.get('next')
-        new_comment = photoapp.crud.create_comment(comment,user_id, photo_id)
+        new_comment = crud.create_comment(comment,user_id, photo_id)
         db.session.add(new_comment)
         db.session.commit()
         return redirect(next_page) if next_page else redirect(url_for('photo',photo_id=photo_id))
@@ -285,9 +305,10 @@ def location(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     location = Location.query.filter(photo_id==photo_id).first()
 
-    # if location 
+    # if location:
+    #     name = location.name
     
-    print (location.place_id)
+    print (location)
     # location = Location.query.filter_by(photo_id=photo_id).first()
     # if location:
     #     return render_template('location.html', photo=photo, location=location)
@@ -319,10 +340,10 @@ def update_location():
 
 
 
-# if __name__ == '__main__':
-#     # app.debug = True
-#     connect_to_db(app)
-#     app.run(host='0.0.0.0',debug=True)
+if __name__ == '__main__':
+    app.debug = True
+    connect_to_db(app)
+    app.run(host='0.0.0.0',debug=True)
    
  
 

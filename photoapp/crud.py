@@ -1,6 +1,6 @@
 """CRUD for Cloudinary"""
 
-from photoapp.model import db, User, Photo, Like, Comment
+from model import db, User, Photo, Like, Comment
 
 def create_user(username, email, password, fname, lname):
     """Create and return a new user."""

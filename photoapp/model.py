@@ -1,18 +1,9 @@
-"""Models for movie ratings app."""
-
-
-
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from photoapp import db, login_manager
 from flask_login import UserMixin
+db = SQLAlchemy()
 
 
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-    
 class User(db.Model, UserMixin):
     """A user."""
 
@@ -123,6 +114,7 @@ class Location(db.Model):
     id = db.Column(db.Integer,
                     primary_key = True,
                     autoincrement = True)
+    name = db.Column(db.String)
     place_id = db.Column(db.String,
                          nullable = False) 
     lat = db.Column(db.Float,
@@ -139,25 +131,8 @@ class Location(db.Model):
     photo = db.relationship("Photo", back_populates="location")
 
     def __repr__(self):
-        return f'<Location place_id = {self.place_id} lat = {self.lat} lng={self.lng} address{self.address} photo_id={self.photo_id} user_id={self.user_id}>'    
-        
-# class LocationSchema(SQLAlchemyAutoSchema):
-#     class Meta:
-#         model = Location
-
-#         id = ma.auto_field()
-#         place_id = ma.auto_field()
-#         lat = ma.auto_field()
-#         lng = ma.auto_field()
-#         address = ma.auto_field()
-#         user_id = ma.auto_field()
-#         photo_id = ma.auto_field()
-#         user = ma.auto_field()
-#         photo = ma.auto_field()
-
-
-
-
+        return f'<Location name={self.name} place_id = {self.place_id} lat = {self.lat} lng={self.lng} address{self.address} photo_id={self.photo_id} user_id={self.user_id}>'    
+    
 
 def connect_to_db(flask_app, db_uri="postgresql:///cloudinary", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
@@ -171,6 +146,7 @@ def connect_to_db(flask_app, db_uri="postgresql:///cloudinary", echo=True):
 
 
 if __name__ == "__main__":
+    
     from server import app
 
     # Call connect_to_db(app, echo=False) if your program output gets

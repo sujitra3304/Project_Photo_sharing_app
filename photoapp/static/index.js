@@ -122,7 +122,7 @@ function initAutocomplete(){
   autocomplete = new google.maps.places.Autocomplete(
     document.getElementById('autocomplete'),
     {
-      fields:['place_id','geometry','formatted_address']
+      fields:['name', 'place_id','geometry','formatted_address']
     }
     
     );
