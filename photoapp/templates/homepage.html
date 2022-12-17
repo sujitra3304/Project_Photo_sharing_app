@@ -5,13 +5,13 @@
 {% block content %}
 
   <div>
-    {% for photo in photos %}
+    {% for photo in all_photos|sort(attribute="date") %}
       <p> Posted by: {{photo.user.username }} {{photo.user_id}}
-        {% if current_user.id != photo.user.id and photo.user_id not in following_list %}
+        <!-- {% if current_user.id != photo.user.id and photo.user_id not in following_list|list %}
         <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
-        {% elif current_user.id != photo.user.id and photo.user_id in following_list %}
+        {% elif current_user.id != photo.user.id and photo.user_id in following_list|list %}
         <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
-        {% endif %}
+        {% endif %} -->
       </p> 
       
       
@@ -25,9 +25,37 @@
       <div>{{photo.likes|length}} Likes</div> 
       <a href="{{ url_for('photo', photo_id=photo.id)}}"
       <div>{{photo.comment|length}} Comments</div>
-      </a>
-      
+      </a>      
     {% endfor %} 
+
+    <div class="recommended-posts">
+      <h2>Suggested Posts</h2>
+
+      {% for follow in recommended_follows %}
+
+      <p> Posted by: {{follow.user_id}} {{follow.user.username}}
+        {% if current_user.id != follow.user_id and follow.user_id not in following_list %}
+        <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
+        {% elif current_user.id != follow.user_id and follow.user_id in following_list %}
+        <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
+        {% endif %}
+      </p> 
+      
+      
+      <div>
+        <a href="{{ url_for('photo', photo_id=follow.id)}}" 
+        </a>
+        
+        <img style = width:180px; class="home-photos" src ="{{follow.url}}">
+      </div>
+      <br>
+      <div>{{follow.likes|length}} Likes</div> 
+      <a href="{{ url_for('photo', photo_id=follow.id)}}"
+      <div>{{follow.comment|length}} Comments</div>
+      </a>      
+    {% endfor %} 
+
+    </div>
   </div>
   
 

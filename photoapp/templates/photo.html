@@ -10,9 +10,9 @@
         <a class="mr-2" href="{{url_for('account',user_id=photo.user.id)}}">{{ photo.user.username }} 
             
         </a>
-        {% if following and current_user.id != photo.user.id%}
+        {% if following and current_user.id != photo.user.id %}
         <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
-        {% elif not following and current_user.id %}
+        {% elif not following and current_user.id != photo.user.id %}
         <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
         {% endif %}
         
@@ -30,13 +30,14 @@
             <span id="likes-count">
             {{ photo.likes|length }}</span> 
             {% if likes %}    
-            <i class="fas fa-thumbs-up"
+            <i class="fa-solid fa-heart" 
                 id="like-button"></i>
             {% else %}
-            <i class="far fa-thumbs-up" 
+            <i class="fa-regular fa-heart"
                 id="like-button"></i>
             {% endif %}    
         </div>
+        <i id="location-btn" class="fa-solid fa-location-dot"></i>
         <div> 
             <h1>Comments</h1>
             {% for comment in comments %}

@@ -6,9 +6,11 @@
         <div class="media-body">
           <div class="article-metadata">
             <a class="mr-2" href="#">{{ photos.user_id }}</a>
+            <a href="/upload_profile_pic">Upload Profile Photo</a>
             {% for photo in photos%}
             <div>
-            <a href="{{ url_for('photo', photo_id=photo.id)}}" </a>
+              {{ photo.id}}
+            <a id="profile-pic" href="{{ url_for('photo', photo_id=photo.id) }}" </a>
             <img style = width:180px; src = "{{photo.url}}">
             </div>
 

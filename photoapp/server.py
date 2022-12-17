@@ -1,25 +1,14 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash,session,abort
 from photoapp import app, db, bcrypt
 from photoapp.forms import Registration, Login,AddComment
-from photoapp.model import User, Photo, Like, Comment, Follow
+from photoapp.model import User, Photo, Like, Comment, Follow, Location
 from flask_login import login_user, current_user, logout_user, login_required
 from photoapp import bcrypt
 import photoapp.crud
 import cloudinary.uploader
 from sqlalchemy.sql import text
-# import os
+from photoapp import CLOUDINARY_KEY, CLOUDINARY_SECRET
 
-# CLOUDINARY_KEY = os.environ['CLOUDINARY_KEY']
-# CLOUDINARY_SECRET = os.environ['CLOUDINARY_SECRET']
-# CLOUD_NAME="sujitra"
-
-
-# app = Flask(__name__)
-# flask_bcrypt = Bcrypt(app)
-# login_manager = LoginManager(app)
-
-# app.config['SECRET_KEY'] = '4569740e2dac685f61cbd9085d0cdb16'
-# from model import db, User, Photo, Like, Comment
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     """Create new user"""
@@ -66,19 +55,30 @@ def login():
 def homepage():
     """Show homepage."""
     photos = Photo.query.all()
-    following = Follow.query.filter_by(user_id=current_user.id).all()
+    following = Follow.query.filter_by(user_id=current_user.id).all()     
     following_list = []
+    all_photos = []
+    recommended_follows=[]
+    print(f'CURREnT USER {current_user}')
     for follow in following:
         following_list.append(follow.following_user_id)
-        print (type(following_list))
-    print(f'HOME ROUTE FOLLOWING LIST {following_list}')
+        all_photos.extend(Photo.query.filter_by(user_id=follow.following_user_id).all())
+    all_photos.extend(Photo.query.filter_by(user_id=current_user.id).all())
+    
+    for recommended in photos:
+        
+        if recommended not in recommended_follows and recommended.user_id != current_user.id and recommended.user_id not in following_list:
+             recommended_follows.extend(Photo.query.filter_by(user_id=recommended.user_id).all())
+    
 
-   
+    print(f'HOME ROUTE FOLLOWING LIST {following_list}')    
     
-    
-    
-    
-    return render_template('homepage.html', photos=photos, following = following, following_list=following_list)
+    return render_template('homepage.html', photos=photos, following = following,
+                            all_photos=all_photos, recommended_follows=recommended_follows)
+
+@app.route('/upload_profile_pic')
+def upload_profile_pic():
+    return render_template('profile_photo_upld.html')
 
 @app.route('/upload')
 def upload_photo():
@@ -97,11 +97,19 @@ def show_image():
 def post_form_data():
     """Process form data and redirect to /show-image page"""
     my_file = request.files['my-file']
-    # caption = request.form.get['caption']
-    # title = request.form.get['title']
     img_url = upload_to_cloudinary(my_file)
     add_user_img_record(img_url)
     return redirect(url_for('show_image', imgURL=img_url))
+
+@app.route('/profile_photo_upld', methods=['POST'])
+@login_required
+def profile_photo_upld():
+    """Process form data and redirect to /show-image page"""
+    my_file = request.files['my-file']
+    img_url = upload_to_cloudinary(my_file)
+    add_profile_pic(img_url)
+    return redirect(url_for('show_image', imgURL=img_url))
+
 
 def upload_to_cloudinary(media_file):
     """Upload media file to Cloudinary"""
@@ -111,17 +119,24 @@ def upload_to_cloudinary(media_file):
                                         cloud_name='sujitra')
     return result['secure_url']
 
+def add_profile_pic(img_url):
+    """Stub function for persisting data to database"""
+    profile_pic = User.query.get(current_user.id)
+    profile_pic.profile_pic_url = img_url
+    db.session.commit()
+    print (profile_pic.profile_pic_url)
+    
 
 def add_user_img_record(img_url,caption=None, title=None):
     """Stub function for persisting data to database"""
     user_id = current_user.id
     url=img_url
+    print(f'URL {url}')
     photo = photoapp.crud.create_photo(user_id, url ,title,caption)
     db.session.add(photo)
     db.session.commit()
-    print (current_user)
-    print("\n".join([f"{'*' * 20}", "SAVE THIS url to your database!!",
-                    img_url, f"{'*' * 20}" ]))
+    # print("\n".join([f"{'*' * 20}", "SAVE THIS url to your database!!",
+                    # img_url, f"{'*' * 20}" ]))
 
 
 @app.route("/logout")
@@ -134,7 +149,7 @@ def logout():
 @login_required
 def account(user_id):
     """displays username and photos that were posted by this user""" 
-
+    user_id=(int(user_id))
     user = User.query.get(user_id)
     
     photos= Photo.query.filter(Photo.user_id==user_id).all()
@@ -146,6 +161,7 @@ def account(user_id):
 @app.route("/photo/<int:photo_id>")
 def photo(photo_id):
     """show selected photo, likes, and comments for this particular photo id"""
+    photo_id = (int(photo_id))
     if current_user.is_authenticated:
         photo = Photo.query.get_or_404(photo_id)
         comments = Comment.query.filter(Comment.photo_id==photo_id).all()
@@ -153,7 +169,7 @@ def photo(photo_id):
         following = Follow.query.filter_by(user_id=current_user.id, following_user_id=photo.user_id).all()
         form=AddComment()
         print(likes)
-        print(f'PHOTO ROUTE FOLLOWING{following}')
+        # print(f'PHOTO ROUTE FOLLOWING{following}')
         # print(likes)
         # print(current_user)
         
@@ -262,6 +278,44 @@ def follow_user(following_user_id):
 
     print(f'FOLLOWED {followed} TYPE(type({followed}))')
     return jsonify({"followed": followed})
+
+@app.route("/location/<photo_id>", methods=['POST','GET'])
+@login_required
+def location(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    location = Location.query.filter(photo_id==photo_id).first()
+
+    # if location 
+    
+    print (location.place_id)
+    # location = Location.query.filter_by(photo_id=photo_id).first()
+    # if location:
+    #     return render_template('location.html', photo=photo, location=location)
+    # print(f'LOCATION {photo_id}')
+    return render_template('location.html', photo=photo)
+
+@app.route("/update_location", methods=["POST","GET"]) 
+@login_required
+def update_location():
+    address = request.args.get('address')
+    photo_id = request.args.get('photoId')
+    place_id = request.args.get('place-id')
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    user_id = current_user.id 
+    # photo = Photo.query.get_or_404(photo_id)
+    photo_location = Location(place_id=place_id,lat=(float(lat)),lng=(float(lng)), user_id=(int(user_id)), photo_id=(int(photo_id)))
+
+    db.session.add(photo_location)
+    db.session.commit()
+
+    print(f'PHOTOID {photo_id}')
+    print (f'ADDRESS {address}')
+    return render_template ('location.html', photo_id=photo_id)
+    
+
+
+
 
 
 

@@ -14,14 +14,15 @@
     <div class="container">
       <div class="navbar-nav">
         {% if current_user.is_authenticated %}
-      
+          <p>{{current_user.username}} <br> {{current_user.fname}} {{current_user.lname}}</p>
+          <img style = width:80px; src ="{{current_user.profile_pic_url}}">
           <a class="nav-item nav-link" href="{{ url_for('account',user_id=current_user.id)}}">Account</a>
           <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
         {% else %}
           <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
           <a class="nav-item nav-link" href="{{ url_for('register') }}">Create Account</a>
         {% endif %}
-        <h2><a href="/upload">Upload photos</a></h2>
+        <a href="/upload">Upload photos</a>
       </div>
     </div>
     {% block content %}
@@ -30,9 +31,9 @@
 
   <script src="/static/index.js"></script>
   <!-- googlemaps -->
-  <!-- <script async
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo-KTkaJSRIFlpsuujMcCmaj5gD1yjs5Q&libraries=places&callback=initMap">
-  </script> -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMQe7y-1ty3UxxRzj3JQ-MHM4gEcetUBI&libraries=places&callback=initAutocomplete">
+</script>
 
 
     

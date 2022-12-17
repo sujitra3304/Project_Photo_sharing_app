@@ -14,9 +14,9 @@ function like() {
         likeCount.innerHTML = data["likes"];
         
         if (data["liked"] === "True") {
-          likeButton.className = "fas fa-thumbs-up";
+          likeButton.className = "fa-solid fa-heart";
         } else {
-          likeButton.className = "far fa-thumbs-up";
+          likeButton.className = "fa-regular fa-heart";
         }
       })
   }
@@ -61,7 +61,9 @@ function deleteComment(evt) {
 })
 }
 
-
+// fetch data from server to check if user is already following this user
+// if following, display the unfollow button. 
+// if not following display the follow button. 
 
 function followUser (evt) {
   const followBtnsStatuses = document.querySelectorAll(".followBtnStatus")
@@ -94,3 +96,89 @@ for (const followBtn of followBtns){
   followBtn.addEventListener('click', followUser)
 
 }
+
+// direct user to location page
+
+const locationBtns = document.querySelector('#location-btn')
+
+function toLocationPage(evt) {
+  const getPhotoId = locationPath = window.location.pathname.split("/")
+  const photoId = getPhotoId[2]
+  console.log(window.location.pathname)
+  window.location.href = "http://localhost:5000/location/"+photoId
+}
+if (locationBtns){
+   locationBtns.addEventListener('click',toLocationPage)
+   
+}
+
+// autocomplete feature
+
+const autocompleteInput = document.querySelector('#autocomplete')
+
+let autocomplete;
+
+function initAutocomplete(){
+  autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById('autocomplete'),
+    {
+      fields:['place_id','geometry','formatted_address']
+    }
+    
+    );
+    autocomplete.addListener('place_changed', onPlaceChanged); 
+
+  }
+  
+
+
+  autocompleteInput.addEventListener('input', initAutocomplete)
+
+// Get place information e.g. placeId lat,lng formatted address. 
+
+function onPlaceChanged(evt){
+   let place = autocomplete.getPlace();
+   let lat = place.geometry.location.lat();
+   let lng = place.geometry.location.lng();
+   let placeId = place.place_id;
+   let getPhotoId = window.location.pathname.split('/');
+   let photoId = getPhotoId[2]
+
+
+   console.log(place)
+   console.log(place.geometry.location.lat())
+   let geolocation = place.formatted_address
+       document.getElementById('output').innerHTML = geolocation;
+        document.getElementById('lat').value = lat; 
+        document.getElementById('lng').value = lng;
+        document.getElementById('place-id').value= placeId;
+        document.getElementById('photo-id').value=photoId
+
+  //  if (!place.geometry){
+  //   document.getElementById('autocomplete').placeholder = 'Enter Location';
+  //  }
+  //  else {
+  //   document.getElementById('output').innerHTML = place.formatted_address;
+  //  }
+}
+
+function initMap() {
+  const getPhotoId = locationPath = window.location.pathname.split("/")
+  const photoId = getPhotoId[2]
+  fetch(`/follow/${FollowingUserId}`, { method: "POST" })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log (data)
+  
+  
+  
+  
+  })
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8
+  });
+}
+
+
