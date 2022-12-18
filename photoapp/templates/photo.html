@@ -37,7 +37,11 @@
                 id="like-button"></i>
             {% endif %}    
         </div>
+        {% if location == False %}
+        <i id="add-location" class="fa-solid fa-location-dot"></i>
+        {% else %}
         <i id="location-btn" class="fa-solid fa-location-dot"></i>
+        {% endif %}
         <div> 
             <h1>Comments</h1>
             {% for comment in comments %}

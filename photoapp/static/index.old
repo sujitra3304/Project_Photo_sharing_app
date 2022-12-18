@@ -1,4 +1,3 @@
-
 const likeButton = document.querySelector('#like-button');
 
 
@@ -29,8 +28,8 @@ function like() {
 const deletePhotoBtn = document.querySelector('#delete-photo')
 
 function deletePhoto() {
-    locationPath = window.location.pathname.split("/");
-    photoId=parseInt(locationPath[2])
+   let locationPath = window.location.pathname.split("/");
+    let photoId=parseInt(locationPath[2])
 
     fetch(`/delete_photo/${photoId}`, { method: "POST" })
       .then((response) => response.text())
@@ -68,8 +67,8 @@ function deleteComment(evt) {
 
 function followUser (evt) {
   const followBtnsStatuses = document.querySelectorAll(".followBtnStatus")
-  getFollowingUser = evt.target.id.split("-");
-  FollowingUserId = getFollowingUser[2];
+  let getFollowingUser = evt.target.id.split("-");
+  let FollowingUserId = getFollowingUser[2];
   
   fetch(`/follow/${FollowingUserId}`, { method: "POST" })
   .then((response) => response.json())
@@ -99,21 +98,13 @@ for (const followBtn of followBtns){
 }
 
 // direct user to location page
-const addLocationBtn = document.querySelector('#add-location')
-const locationBtns = document.querySelector('#location-btn')
+
 
 function toLocationPage(evt) {
   const getPhotoId = locationPath = window.location.pathname.split("/")
   const photoId = getPhotoId[2]
   console.log(window.location.pathname)
-  window.location.href = "http://localhost:5000/to_location/"+photoId
-}
-if (addLocationBtn){
-    addLocationBtn.addEventListener('click', toLocationPage)
-}
-if (locationBtns){
-   locationBtns.addEventListener('click',initMap)
-   
+  window.location.href = "http://localhost:5000/location/"+photoId
 }
 
 // autocomplete feature
@@ -135,11 +126,11 @@ function initAutocomplete(){
   }
   
 
-  if (autocompleteInput){
-    autocompleteInput.addEventListener('input', initAutocomplete)
-
-  }
+if (autocompleteInput){
+  autocompleteInput.addEventListener('input', initAutocomplete)
+}
   
+
 // Get place information e.g. placeId lat,lng formatted address. 
 
 function onPlaceChanged(evt){
@@ -168,33 +159,32 @@ function onPlaceChanged(evt){
   //  else {
   //   document.getElementById('output').innerHTML = place.formatted_address;
   //  }
-}
 
+
+ }
+ 
+ const locationBtn = document.querySelector('#location-btn')
+ 
 function initMap() {
-  const getPhotoId = locationPath = window.location.pathname.split("/")
-  const photoId = getPhotoId[2]
-  fetch(`/location/${photoId}`, { method: "POST" })
+  let getPhotoId = locationPath = window.location.pathname.split("/")
+  let photoId = getPhotoId[2]
+  console.log (photoId)
+  fetch(`/location/${photoId}`)
   .then((response) => response.json())
-  .then((data) => {
-    console.log(data.name)
-    let lat = data.lat
-    window.location.href = "http://localhost:5000/location/"+photoId 
-    
-
+  .then((responseDataJson) => {
+    if (responseDataJson["location"]==='false')
+      document.querySelector('#output').innerHTML = <p>No Location</p>
+    // alert("Pls enter location information")
+       console.log (responseDataJson)
+       
+      })
         
-    
-    })
-    
-    // alert ('false')
-    
-  
-  
-  
-  
-  
+       
+  }
 
-//   map = new google.maps.Map(document.getElementById('map'), {
-//     center: {lat: -34.397, lng: 150.644},
-//     zoom: 8
-//   });
-}
+
+
+if (locationBtn){
+  locationBtn.addEventListener('click',toLocationPage)
+ }   
+

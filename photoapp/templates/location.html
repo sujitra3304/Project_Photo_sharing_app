@@ -1,15 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form action="/update_location" methods="POST" >
-<input id="autocomplete" name="address" placeholder="Enter location" type="text" />
-<p id="output"> data</p>
-<input id="lat" name="lat" placeholder="lat"> 
-<input id="lng" name="lng" placeholder="lng"> 
-<input id="place-id" name="place-id" placeholder="placeId"> 
-<input id="photo-id" name="photoId" placeholder="photoId"> 
-<br> 
-<input id="submit-location" type="submit">
-</form>
-{% endblock %}
+<div id="map"></div>
+<p id="lat">{{lat}}</p>
 
+{% endblock %}

@@ -187,13 +187,18 @@ def photo(photo_id):
         comments = Comment.query.filter(Comment.photo_id==photo_id).all()
         likes = Like.query.filter(Like.user_id==current_user.id, Like.photo_id==photo_id).first()
         following = Follow.query.filter_by(user_id=current_user.id, following_user_id=photo.user_id).all()
+        location = Location.query.filter_by(photo_id=photo_id).first()
         form=AddComment()
+        if not location:
+            location = False
+
+        print(f'************PHOTO ROUTE LOC {location}')
         print(likes)
         # print(f'PHOTO ROUTE FOLLOWING{following}')
         # print(likes)
         # print(current_user)
         
-        return render_template('photo.html', photo=photo, form=form,comments=comments,likes=likes, current_user=current_user,following=following)
+        return render_template('photo.html', photo=photo, form=form,comments=comments,likes=likes, current_user=current_user,following=following, location=location)
     
     else:
         return redirect(url_for('login'))
@@ -251,6 +256,7 @@ def delete_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     comments = Comment.query.filter(photo_id==photo_id).all()
     likes = Like.query.filter(photo_id==photo_id).all()
+    locations = Location.query.filter(photo_id==photo_id).all()
     print(f'########{photo}')
     if photo.user.id != current_user.id:
          abort(403)
@@ -260,6 +266,9 @@ def delete_photo(photo_id):
         db.session.delete(comment)
     for like in likes:
         db.session.delete(like)
+    for location in locations:
+        db.session.delete(location)
+
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('homepage'))
@@ -302,30 +311,44 @@ def follow_user(following_user_id):
 @app.route("/location/<photo_id>", methods=['POST','GET'])
 @login_required
 def location(photo_id):
+    photo_id=(int(photo_id))
     photo = Photo.query.get_or_404(photo_id)
-    location = Location.query.filter(photo_id==photo_id).first()
+    location = Location.query.filter_by(photo_id=photo_id).first()
+    print (photo_id)
+    print (f'LOCATION QUERY {location}')
+    name = location.name
+    lat=location.lat
+    lng=location.lng
+    place_id = location.place_id
+    photo_id = location.photo_id
+    user_id = location.user_id
+    if request.method == 'GET': 
+        return render_template('location.html', photo=photo,lat=lat)
 
-    # if location:
-    #     name = location.name
-    
-    print (location)
-    # location = Location.query.filter_by(photo_id=photo_id).first()
-    # if location:
-    #     return render_template('location.html', photo=photo, location=location)
-    # print(f'LOCATION {photo_id}')
-    return render_template('location.html', photo=photo)
+    else:
+
+
+        name = location.name
+        lat=location.lat
+        lng=location.lng
+        place_id = location.place_id
+        photo_id = location.photo_id
+        user_id = location.user_id
+        return jsonify({'name': name, 'lat': lat, 'lng':lng, 'place_id':place_id, 'photo_id':photo_id, 'user_id':user_id})
+
 
 @app.route("/update_location", methods=["POST","GET"]) 
 @login_required
 def update_location():
     address = request.args.get('address')
     photo_id = request.args.get('photoId')
+    name = request.args.get('name')
     place_id = request.args.get('place-id')
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     user_id = current_user.id 
     # photo = Photo.query.get_or_404(photo_id)
-    photo_location = Location(place_id=place_id,lat=(float(lat)),lng=(float(lng)), user_id=(int(user_id)), photo_id=(int(photo_id)))
+    photo_location = Location(name=name, place_id=place_id,lat=(float(lat)),lng=(float(lng)), user_id=(int(user_id)), photo_id=(int(photo_id)))
 
     db.session.add(photo_location)
     db.session.commit()
@@ -333,6 +356,14 @@ def update_location():
     print(f'PHOTOID {photo_id}')
     print (f'ADDRESS {address}')
     return render_template ('location.html', photo_id=photo_id)
+
+@app.route("/to_location/<photo_id>")
+@login_required 
+def to_location_page(photo_id):
+    photo = Photo.query.get(photo_id)
+
+    return  render_template('updatelocation.html', photo=photo)
+
     
 
 
