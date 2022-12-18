@@ -112,7 +112,7 @@ if (addLocationBtn){
     addLocationBtn.addEventListener('click', toLocationPage)
 }
 if (locationBtns){
-   locationBtns.addEventListener('click',initMap)
+   locationBtns.addEventListener('click',locationPage)
    
 }
 
@@ -170,7 +170,7 @@ function onPlaceChanged(evt){
   //  }
 }
 
-function initMap() {
+function locationPage() {
   const getPhotoId = locationPath = window.location.pathname.split("/")
   const photoId = getPhotoId[2]
   fetch(`/location/${photoId}`, { method: "POST" })
@@ -180,21 +180,28 @@ function initMap() {
     let lat = data.lat
     window.location.href = "http://localhost:5000/location/"+photoId 
     
-
-        
-    
     })
+}
     
-    // alert ('false')
+function initMap()  {
+  const getPhotoId = locationPath = window.location.pathname.split("/")
+  const photoId = getPhotoId[2]
+    fetch(`/location/${photoId}`, { method: "POST" })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data)
+    const locactionCoords = { lat: data.lat, lng: data.lng };
     
-  
-  
-  
-  
-  
-
-//   map = new google.maps.Map(document.getElementById('map'), {
-//     center: {lat: -34.397, lng: 150.644},
-//     zoom: 8
-//   });
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 9,
+        center: locactionCoords,
+    });
+    // The marker, positioned at Uluru
+    const marker = new google.maps.Marker({
+        position: locactionCoords,
+        map: map,
+    });
+    
+    
+})
 }

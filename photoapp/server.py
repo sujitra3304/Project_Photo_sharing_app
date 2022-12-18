@@ -345,7 +345,9 @@ def update_location():
     name = request.args.get('name')
     place_id = request.args.get('place-id')
     lat = request.args.get('lat')
+    lat = (float(lat))
     lng = request.args.get('lng')
+    lng = (float(lng))
     user_id = current_user.id 
     # photo = Photo.query.get_or_404(photo_id)
     photo_location = Location(name=name, place_id=place_id,lat=(float(lat)),lng=(float(lng)), user_id=(int(user_id)), photo_id=(int(photo_id)))
