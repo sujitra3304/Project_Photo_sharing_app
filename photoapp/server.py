@@ -311,30 +311,31 @@ def follow_user(following_user_id):
 @app.route("/location/<photo_id>", methods=['POST','GET'])
 @login_required
 def location(photo_id):
+    print (f'PHOTO LOCATION ROUTE{photo_id}')
     photo_id=(int(photo_id))
     photo = Photo.query.get_or_404(photo_id)
     location = Location.query.filter_by(photo_id=photo_id).first()
     print (photo_id)
     print (f'LOCATION QUERY {location}')
-    name = location.name
-    lat=location.lat
-    lng=location.lng
-    place_id = location.place_id
-    photo_id = location.photo_id
-    user_id = location.user_id
-    if request.method == 'GET': 
-        return render_template('location.html', photo=photo,lat=lat)
+    
+    if not location and photo.user_id == current_user.id:
+        return render_template('updatelocation.html')
+    
+    elif not location and photo.user_id != current_user.id:
+        return render_template('location.html')
 
+    elif request.method == 'GET': 
+        return render_template('location.html',location=location)
+    
     else:
-
-
         name = location.name
         lat=location.lat
         lng=location.lng
+        photo_img = photo.url
         place_id = location.place_id
         photo_id = location.photo_id
         user_id = location.user_id
-        return jsonify({'name': name, 'lat': lat, 'lng':lng, 'place_id':place_id, 'photo_id':photo_id, 'user_id':user_id})
+        return jsonify({'name': name, 'lat': lat, 'lng':lng, 'place_id':place_id, 'photo_id':photo_id, 'user_id':user_id, 'photo_img':photo_img})
 
 
 @app.route("/update_location", methods=["POST","GET"]) 
@@ -357,14 +358,16 @@ def update_location():
 
     print(f'PHOTOID {photo_id}')
     print (f'ADDRESS {address}')
-    return render_template ('location.html', photo_id=photo_id)
+    return redirect(url_for('location', photo_id=photo_id))
 
 @app.route("/to_location/<photo_id>")
 @login_required 
 def to_location_page(photo_id):
     photo = Photo.query.get(photo_id)
+    
 
-    return  render_template('updatelocation.html', photo=photo)
+    # return  render_template('updatelocation.html', photo=photo)
+    return redirect(url_for('location',photo_id=photo_id))
 
     
 

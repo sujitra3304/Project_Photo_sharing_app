@@ -15,4 +15,6 @@
     width: 100%; /* The width is the width of the web page */
   }
   
-  
+  #infoWinImg {
+    height: 150px;
+  }

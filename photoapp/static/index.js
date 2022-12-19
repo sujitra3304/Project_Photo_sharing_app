@@ -161,13 +161,6 @@ function onPlaceChanged(evt){
         document.getElementById('place-id').value= placeId;
         document.getElementById('photo-id').value=photoId
         document.getElementById('name').value=name
-
-  //  if (!place.geometry){
-  //   document.getElementById('autocomplete').placeholder = 'Enter Location';
-  //  }
-  //  else {
-  //   document.getElementById('output').innerHTML = place.formatted_address;
-  //  }
 }
 
 function locationPage() {
@@ -190,18 +183,38 @@ function initMap()  {
   .then((response) => response.json())
   .then((data) => {
     console.log(data)
-    const locactionCoords = { lat: data.lat, lng: data.lng };
+    const photoImg = data.photo_img
+    const locationCoords = { lat: data.lat, lng: data.lng };
+    document.querySelector('#place-name').innerHTML = data.name;
     
     const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 9,
-        center: locactionCoords,
+        zoom: 11,
+        center: locationCoords,
     });
-    // The marker, positioned at Uluru
+    const contentString = `${data.name}  <div class="bear-thumbnail">
+    <img id="infoWinImg"
+      src="${photoImg}"
+      alt="polarbear"
+    />
+  </div>`
+    
+    
+
+  const infowindow = new google.maps.InfoWindow({
+    content: contentString 
+  });
+    
     const marker = new google.maps.Marker({
-        position: locactionCoords,
+        position: locationCoords,
         map: map,
+        title:data.name
     });
     
-    
+    marker.addListener("click", () => {
+        infowindow.open({
+          anchor: marker,
+          map,
+        });
+})
 })
 }
