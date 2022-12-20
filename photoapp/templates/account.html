@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-    
+    <div id="account-map-header">
+    <h2>{{user.username}}'s Adventures</h2>
+    <p>The whole world awaits</p>
+    </div>
+    <div id="account-map"></div>
     <h1>{{ user.username }}</h1>
     <article class="media content-section">
         <div class="media-body">
@@ -23,4 +27,7 @@
             {% endfor %}
             
 <script src="/static/index.js"></script>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMQe7y-1ty3UxxRzj3JQ-MHM4gEcetUBI&callback=initAccountMap">
+  </script>
 {% endblock %}

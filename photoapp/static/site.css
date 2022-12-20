@@ -12,9 +12,20 @@
   }
   #map {
     height: 400px; /* The height is 400 pixels */
-    width: 100%; /* The width is the width of the web page */
+    width: 80%; /* The width is the width of the web page */
+  }
+  #account-map {
+    border-style: solid;
+    border-width: 5px;
+    border-color: whitesmoke;
+    margin:auto;
+    height: 400px; /* The height is 400 pixels */
+    width: 80%; /* The width is the width of the web page */
   }
   
   #infoWinImg {
     height: 150px;
+  }
+  #account-map-header{
+    margin:auto
   }

@@ -140,7 +140,7 @@ def upload_to_cloudinary(media_file):
     return result['secure_url']
 
 def add_profile_pic(img_url):
-    """Stub function for persisting data to database"""
+    """add profile pic to databas"""
     profile_pic = User.query.get(current_user.id)
     profile_pic.profile_pic_url = img_url
     db.session.commit()
@@ -148,15 +148,14 @@ def add_profile_pic(img_url):
     
 
 def add_user_img_record(img_url,caption=None, title=None):
-    """Stub function for persisting data to database"""
+    """add photo to database"""
     user_id = current_user.id
     url=img_url
     print(f'URL {url}')
     photo = crud.create_photo(user_id, url ,title,caption)
     db.session.add(photo)
     db.session.commit()
-    # print("\n".join([f"{'*' * 20}", "SAVE THIS url to your database!!",
-                    # img_url, f"{'*' * 20}" ]))
+   
 
 
 @app.route("/logout")
@@ -369,7 +368,19 @@ def to_location_page(photo_id):
     # return  render_template('updatelocation.html', photo=photo)
     return redirect(url_for('location',photo_id=photo_id))
 
-    
+@app.route("/account_map/<user_id>", methods=["POST"])
+@login_required
+def map_on_account(user_id):
+    locations = Location.query.filter_by(user_id=user_id).all()
+    location_dict ={}
+
+    for location in locations:
+        location_dict[location.id] = {'name':location.name, 'lat':location.lat, 'lng':location.lng, 'photo_id':location.photo_id, 'user_id':location.user_id, 'imgurl':location.photo.url}
+    # print (f'************{location_dict}')
+    return jsonify(location_dict)
+
+
+
 
 
 

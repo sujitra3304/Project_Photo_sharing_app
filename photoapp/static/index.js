@@ -191,10 +191,10 @@ function initMap()  {
         zoom: 11,
         center: locationCoords,
     });
-    const contentString = `${data.name}  <div class="bear-thumbnail">
+    const contentString = `${data.name}  <div >
     <img id="infoWinImg"
       src="${photoImg}"
-      alt="polarbear"
+      alt="${data.name}"
     />
   </div>`
     
@@ -218,3 +218,41 @@ function initMap()  {
 })
 })
 }
+
+function initAccountMap()  {
+    const map = new google.maps.Map(document.getElementById("account-map"), {
+        zoom: 2,
+        center: {lat:39, lng:34},
+    });
+    const accountMapInfo = new google.maps.InfoWindow();
+
+    const getUserId = locationPath = window.location.pathname.split("/")
+    const userId = getUserId[2]
+      fetch(`/account_map/${userId}`, { method: "POST" })
+    .then((response) => response.json())
+    .then((locations) => {
+            for (const location of Object.values(locations)){
+                const contentString = `${location.name}  <div >
+                <img id="infoWinImg"
+                src="${location.imgurl}"
+                alt="${location.name}"
+                />
+                `;
+
+                const accountMapMarker = new google.maps.Marker({
+        position: {lat:location.lat, lng:location.lng},
+        map: map,
+        title:location.name
+    });
+        accountMapMarker.addListener('click', () => {
+            accountMapInfo.close();
+            accountMapInfo.setContent(contentString);
+            accountMapInfo.open(map, accountMapMarker);
+            
+        });
+    }})
+}
+            
+            
+ 
+    
