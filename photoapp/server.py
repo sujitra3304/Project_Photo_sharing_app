@@ -69,8 +69,13 @@ def login():
 def homepage():
     """Show homepage."""
     photos = Photo.query.all()
+    for photo in photos:
+        print(f'HOMEPAGE PHOTO.LIKES {photo.likes}')
     following = Follow.query.filter_by(user_id=current_user.id).all()     
     following_list = []
+    likes = Like.query.filter_by(user_id=current_user.id).all()
+    current_user_likes=[]
+    print (f' HOMEPAGE LIKES {likes}')
     all_photos = []
     recommended_follows=[]
     print(f'CURREnT USER {current_user}')
@@ -83,12 +88,17 @@ def homepage():
         
         if recommended not in recommended_follows and recommended.user_id != current_user.id and recommended.user_id not in following_list:
              recommended_follows.extend(Photo.query.filter_by(user_id=recommended.user_id).all())
-    
 
+    for like in likes:
+        current_user_likes.append(like.photo_id)
+    print(f'CURRENT USER LIKES {current_user_likes}')
+    
     print(f'HOME ROUTE FOLLOWING LIST {following_list}')    
     
     return render_template('homepage.html', photos=photos, following = following,
-                            all_photos=all_photos, recommended_follows=recommended_follows)
+                            all_photos=all_photos, recommended_follows=recommended_follows, current_user_likes=current_user_likes)
+    
+    
 
 @login_manager.user_loader
 def load_user(id):
@@ -101,6 +111,7 @@ def upload_profile_pic():
     return render_template('profile_photo_upld.html')
 
 @app.route('/upload')
+@login_required
 def upload_photo():
 
     return render_template('upload.html')
@@ -378,13 +389,6 @@ def map_on_account(user_id):
         location_dict[location.id] = {'name':location.name, 'lat':location.lat, 'lng':location.lng, 'photo_id':location.photo_id, 'user_id':location.user_id, 'imgurl':location.photo.url}
     # print (f'************{location_dict}')
     return jsonify(location_dict)
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

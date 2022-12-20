@@ -1,4 +1,26 @@
+const homepageLikeBtns = document.querySelectorAll("[id^='home-like-button']")
+for (const homepageLikeBtn of homepageLikeBtns){
+    
+    homepageLikeBtn.addEventListener('click', homepageLike)
 
+function homepageLike(evt) {
+    getPhotoId = evt.target.id.split("-");
+    photoId=getPhotoId[3];
+    el = document.getElementById(`home-like-button-${photoId}`)
+    fetch(`/like/${photoId}`, { method: "POST" })
+      .then((response) => response.text())
+      .then((data) => {
+        console.log(data)
+        if (data["liked"] === "True") {
+            el.className = "fa-solid fa-heart";
+        }
+        else  {
+            el.className = "fa-regular fa-heart";
+          }
+})
+}
+
+}
 const likeButton = document.querySelector('#like-button');
 
 

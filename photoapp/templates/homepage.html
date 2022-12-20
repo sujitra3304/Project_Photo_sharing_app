@@ -22,10 +22,19 @@
         <img style = width:180px; class="home-photos" src ="{{photo.url}}">
       </div>
       <br>
-      <div>{{photo.likes|length}} Likes</div> 
       <a href="{{ url_for('photo', photo_id=photo.id)}}"
       <div>{{photo.comment|length}} Comments</div>
-      </a>      
+    </a> 
+      <div>
+          {% if photo.id in current_user_likes %}
+          <i class="fa-solid fa-heart" 
+                id="home-like-button-{{photo.id}}"></i>
+            {% else %}
+            <i class="fa-regular fa-heart"
+                id="home-like-button-{{photo.id}}"></i>
+            {% endif %}    
+      </div> 
+           
     {% endfor %} 
 
     <div class="recommended-posts">
@@ -49,10 +58,11 @@
         <img style = width:180px; class="home-photos" src ="{{follow.url}}">
       </div>
       <br>
-      <div>{{follow.likes|length}} Likes</div> 
+      
       <a href="{{ url_for('photo', photo_id=follow.id)}}"
       <div>{{follow.comment|length}} Comments</div>
       </a>      
+      <div>{{follow.likes|length}} Likes</div> 
     {% endfor %} 
 
     </div>
