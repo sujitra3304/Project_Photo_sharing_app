@@ -11,11 +11,11 @@ function homepageLike(evt) {
       .then((response) => response.text())
       .then((data) => {
         console.log(data)
-        if (data["liked"] === "True") {
-            el.className = "fa-solid fa-heart";
+        if (data["liked"] != "True") {
+            el.className = "fa-regular fa-heart";
         }
         else  {
-            el.className = "fa-regular fa-heart";
+            el.className = "fa-solid fa-heart";
           }
 })
 }

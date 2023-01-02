@@ -5,17 +5,19 @@
     <p>The whole world awaits</p>
     </div>
     <div id="account-map"></div>
-    <h1>{{ user.username }}</h1>
-    <article class="media content-section">
-        <div class="media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ photos.user_id }}</a>
+    
+    
             <a href="/upload_profile_pic">Upload Profile Photo</a>
-            {% for photo in photos%}
+            <div class="container">
+              {% for row in photos|batch(2) %}
+              <div class="row">
+            {% for photo in row%}
+            <div class="col-4">
+
             <div>
-              {{ photo.id}}
+
             <a id="profile-pic" href="{{ url_for('photo', photo_id=photo.id) }}" </a>
-            <img style = width:180px; src = "{{photo.url}}">
+            <img class="img-thumbnail" style = width:300px; src = "{{photo.url}}">
             </div>
 
             
@@ -23,9 +25,11 @@
             <div>{{photo.comment|length}} Comments</div>
             </a>
             <div>{{photo.likes|length}} Likes</div>
-
+          </div>
             {% endfor %}
-            
+          </div>
+            {% endfor %}
+          </div>
 <script src="/static/index.js"></script>
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMQe7y-1ty3UxxRzj3JQ-MHM4gEcetUBI&callback=initAccountMap">

@@ -78,7 +78,7 @@ def homepage():
     print (f' HOMEPAGE LIKES {likes}')
     all_photos = []
     recommended_follows=[]
-    print(f'CURREnT USER {current_user}')
+    
     for follow in following:
         following_list.append(follow.following_user_id)
         all_photos.extend(Photo.query.filter_by(user_id=follow.following_user_id).all())
@@ -93,7 +93,8 @@ def homepage():
         current_user_likes.append(like.photo_id)
     print(f'CURRENT USER LIKES {current_user_likes}')
     
-    print(f'HOME ROUTE FOLLOWING LIST {following_list}')    
+    print(f'HOME ROUTE FOLLOWING LIST {following_list}')  
+    print(f'ALLPHOTOS {all_photos}') 
     
     return render_template('homepage.html', photos=photos, following = following,
                             all_photos=all_photos, recommended_follows=recommended_follows, current_user_likes=current_user_likes)
@@ -123,13 +124,15 @@ def show_image():
     return render_template('results.html', img_src=img_url)
 
 
-@app.route('/post-form-data', methods=['POST'])
+@app.route('/post-form-data', methods=['POST','GET'])
 @login_required
 def post_form_data():
     """Process form data and redirect to /show-image page"""
     my_file = request.files['my-file']
+    caption = request.args.get('caption')
     img_url = upload_to_cloudinary(my_file)
     add_user_img_record(img_url)
+    print (f'CAPTIION {caption}')
     return redirect(url_for('show_image', imgURL=img_url))
 
 @app.route('/profile_photo_upld', methods=['POST'])

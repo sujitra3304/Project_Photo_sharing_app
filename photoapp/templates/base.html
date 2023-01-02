@@ -6,25 +6,54 @@
     
     <!-- Bootstrap CSS -->
     <script src="https://kit.fontawesome.com/e6be9a0126.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/site.css">
 </head>
 <body>
-    <h1>Shutterspace</h1>
-    <div class="container">
-      <div class="navbar-nav">
+
+  <div id ="navbar" class="navbar navbar-expand-xxl bg-light, sticky-top, navbar sticky-top">
+    <a class="navbar-brand" href="{{ url_for('homepage') }}">Shutterspace</a> 
         {% if current_user.is_authenticated %}
-          <p>{{current_user.username}} <br> {{current_user.fname}} {{current_user.lname}}</p>
-          <img style = width:80px; src ="{{current_user.profile_pic_url}}">
-          <a class="nav-item nav-link" href="{{ url_for('account',user_id=current_user.id)}}">Account</a>
-          <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+       
+        
+        <ul class = "nav-items"> 
+          
+          <li>
+            <div class = "profile nav-item">
+            <a href="{{ url_for('account',user_id = current_user.id) }}"</a>
+            <img id="profile-img" style = width:30px; src ="{{current_user.profile_pic_url}}" alt="{{current_user.username}}"> 
+             
+          </div>
+          </li>
+          <li>
+            <a class="nav-item nav-link" href="{{ url_for('account',user_id=current_user.id)}}">Account</a>
+          </li>
+          <li>
+            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          <li>
+            <a class="nav-item nav-link" href="/upload">Upload photos</a>       
+          </li>   
+         </ul> 
+        
+      
         {% else %}
-          <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+        <ul class = "nav-items"> 
+          <li>
+          <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>     
+        </li>
+        <li>   
           <a class="nav-item nav-link" href="{{ url_for('register') }}">Create Account</a>
+        </li> 
+        </ul>
+     
+    
         {% endif %}
-        <a href="/upload">Upload photos</a>
-      </div>
     </div>
+  
+
     {% block content %}
     
     {% endblock %}

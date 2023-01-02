@@ -1,73 +1,110 @@
 {% extends 'base.html' %}
-
 {% block title %}Cloudinary Demo Homepage{% endblock %}
-
 {% block content %}
 
-  <div>
-    {% for photo in all_photos|sort(attribute="date") %}
-      <p> Posted by: {{photo.user.username }} {{photo.user_id}}
-        <!-- {% if current_user.id != photo.user.id and photo.user_id not in following_list|list %}
-        <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
-        {% elif current_user.id != photo.user.id and photo.user_id in following_list|list %}
-        <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{photo.user_id}}"></i>
-        {% endif %} -->
-      </p> 
-      
-      
-      <div>
-        <a href="{{ url_for('photo', photo_id=photo.id)}}" 
-        </a>
-        
-        <img style = width:180px; class="home-photos" src ="{{photo.url}}">
+   {% for photo in all_photos%}
+   <div class="container text-center">
+    <div class="row">
+      <div class="column-2">
       </div>
-      <br>
-      <a href="{{ url_for('photo', photo_id=photo.id)}}"
-      <div>{{photo.comment|length}} Comments</div>
-    </a> 
-      <div>
-          {% if photo.id in current_user_likes %}
-          <i class="fa-solid fa-heart" 
-                id="home-like-button-{{photo.id}}"></i>
-            {% else %}
-            <i class="fa-regular fa-heart"
-                id="home-like-button-{{photo.id}}"></i>
-            {% endif %}    
-      </div> 
-           
-    {% endfor %} 
-
-    <div class="recommended-posts">
-      <h2>Suggested Posts</h2>
-
-      {% for follow in recommended_follows %}
-
-      <p> Posted by: {{follow.user_id}} {{follow.user.username}}
-        {% if current_user.id != follow.user_id and follow.user_id not in following_list %}
-        <i class="fa-solid fa-user-plus followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
-        {% elif current_user.id != follow.user_id and follow.user_id in following_list %}
-        <i class="fa-solid fa-user-minus followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
-        {% endif %}
-      </p> 
-      
-      
-      <div>
-        <a href="{{ url_for('photo', photo_id=follow.id)}}" 
-        </a>
-        
-        <img style = width:180px; class="home-photos" src ="{{follow.url}}">
-      </div>
-      <br>
-      
-      <a href="{{ url_for('photo', photo_id=follow.id)}}"
-      <div>{{follow.comment|length}} Comments</div>
-      </a>      
-      <div>{{follow.likes|length}} Likes</div> 
-    {% endfor %} 
-
+      <div class="column-8 text-center">
+   <div class="card "  style="width: 432px; height: auto;">
+    <div class="card-body">
+    <div class="card-header text-start" style="background-color:white;">
+      <a href = "{{ url_for('account', user_id=photo.user_id)}}"> <img class="class-img-top" id="profile-img" src ="{{photo.user.profile_pic_url}}" alt="{{photo.user.username}}"> 
+      </a>
+      <p class="card-username d-inline">{{  photo.user.username }}</p>
     </div>
-  </div>
-  
+      <a class="d-inline" href="{{ url_for('photo', photo_id=photo.id)}}"> <img class="card-img-top home-photos"id="images"  src ="{{photo.url}}" ></a>
+        <div class="like-comment-section text-start">
+            {% if photo.id in current_user_likes %}
+            <i class="fa-solid fa-heart likes" 
+               id="home-like-button-{{photo.id}}"></i>
+            {% else %}
+            <i class="fa-regular fa-heart likes"
+               id="home-like-button-{{photo.id}}"></i>
+    
+            {% endif %} 
+            {% if photo.comment|length > 0 %}
+            <a class="view-comment-link" href="{{ url_for('photo', photo_id=photo.id)}}"
+            <div>View {{photo.comment|length}} comments</div>
+            </a>  
+            {% else %}
+            <a class="view-comment-link" href="{{ url_for('photo', photo_id=photo.id)}}"
+            <div>Add comment</div>
+            </a>  
+            {% endif %}    
 
-  <script src="/static/index.js"></script>
+        </div>
+        </div>  
+</div> 
+</div> 
+<div class="column-2">
+
+</div>
+</div>
+
+</div>  
+{% endfor %} 
+
+
+<div class="recommended-posts text-center">
+   <h2>Suggested Posts</h2>
+   {% for follow in recommended_follows %}
+   <div class="container text-center">
+    <div class="row">
+      <div class="column-2">
+
+      </div>
+      <div class="column-8">
+   <div class="card" style="width: 432px; height: auto;">
+    <div class="card-body">
+    <div class="card-header text-start" style="background-color:white ;">
+      <img id="profile-img" src="{{follow.user.profile_pic_url}}" >
+      {{follow.user.username}}
+       <!-- <div class="follow"> -->
+        {% if current_user.id != follow.user_id and follow.user_id not in following_list %}
+        <i class="fa-solid fa-user-plus fa-xs followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
+        {% elif current_user.id != follow.user_id and follow.user_id in following_list %}
+        <i class="fa-solid fa-user-minus fa-xs followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
+        {% endif %}    
+       <!-- </div> -->
+    </div>
+    <div>
+      <a href="{{ url_for('photo', photo_id=follow.id)}}"><img class="card-img-top home-photos" id="images" src ="{{follow.url}}"> 
+      </a>
+      
+   </div>
+   
+   <div class="suggested-like-comment-section text-start">
+    {% if follow.id in current_user_likes %}
+        <i class="fa-solid fa-heart likes" 
+         id="home-like-button-{{follow.id}}"></i>
+         {% else %}
+        <i class="fa-regular fa-heart likes"
+         id="home-like-button-{{follow.id}}"></i>
+
+      {% endif %} 
+
+      {% if follow.comment|length > 0 %}
+      <a class="view-comment-link"href="{{ url_for('photo', photo_id=follow.id)}}"
+      <div>View {{follow.comment|length}} comments</div>
+      </a>  
+      {% else %}
+      <a class="view-comment-link" href="{{ url_for('photo', photo_id=follow.id)}}"
+      <div>Add comment</div>
+      </a>  
+      {% endif %}    
+      
+      
+   </div>
+    </div>
+   </div>
+  </div>
+   {% endfor %} 
+  </div>
+</div>
+</div>
+
+<script src="/static/index.js"></script>
 {% endblock %}

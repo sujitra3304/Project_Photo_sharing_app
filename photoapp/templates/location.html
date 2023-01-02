@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="place-name"></div>
-<div id="map"></div>
+<div class="container text-right">
+    
+    <div class="row">
+        <div class="col-2">
 
+        </div>
+        <div class="col-8">
+<div class="text-start" id="place-name"></div>
 
+<div style=border-style:solid;border-width:5px;border-color:white id="map">
+</div>
+<div class="edit"><a href="#"><i class="fa fa-pencil fa-lg"></i></a></div>
+</div>
+<div class="col-2">
 
+</div>
+</div>
+</div>
 <script src="/static/index.js"></script>
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMQe7y-1ty3UxxRzj3JQ-MHM4gEcetUBI&callback=initMap">
