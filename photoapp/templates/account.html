@@ -1,35 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-    <div id="account-map-header">
-    <h2>{{user.username}}'s Adventures</h2>
-    <p>The whole world awaits</p>
+<a style=float:right; href="/upload_profile_pic">Upload Profile Photo</a>
+    <div class="container text-start" id="account-map-header">
+      <img class="d-inline" id="map-profile-pic"style="width:200px;height:200px;margin-left:3vw;border-style:solid;border-color:white;border-width:4px;" src="{{user.profile_pic_url}}"/> 
+    <h2 class="account-header d-inline" style="margin-left:15px;">{{user.username}}'s Adventures</h2>
+    <p style="font-size:24px;font-style: italic; margin-right: 7vw;" class="account-saying text-center">The whole world awaits</p>
     </div>
-    <div id="account-map"></div>
+    <div style="padding-bottom: 20px ;" id="account-map"></div>
     
     
-            <a href="/upload_profile_pic">Upload Profile Photo</a>
+            
             <div class="container">
-              {% for row in photos|batch(2) %}
-              <div class="row">
-            {% for photo in row%}
-            <div class="col-4">
-
+            <div class="row row-cols-4">
+              {% for photo in photos %}
+            <div class="col" style="margin-left:5vw;">
+              
             <div>
 
-            <a id="profile-pic" href="{{ url_for('photo', photo_id=photo.id) }}" </a>
-            <img class="img-thumbnail" style = width:300px; src = "{{photo.url}}">
+            <a href="{{ url_for('photo', photo_id=photo.id) }}" </a>
+            <img style="width: 350px;border-style: solid;border-color: white; border-width: 4px;" class="";" src = "{{photo.url}}"/>
             </div>
 
             
-            <a href="{{ url_for('photo', photo_id=photo.id)}}"
+            <a href="{{ url_for('photo', photo_id=photo.id)}}">
             <div>{{photo.comment|length}} Comments</div>
             </a>
             <div>{{photo.likes|length}} Likes</div>
+          
+            
           </div>
-            {% endfor %}
+          {% endfor %}
           </div>
-            {% endfor %}
-          </div>
+            </div>
+         
 <script src="/static/index.js"></script>
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMQe7y-1ty3UxxRzj3JQ-MHM4gEcetUBI&callback=initAccountMap">

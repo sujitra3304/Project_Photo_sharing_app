@@ -1,6 +1,6 @@
 """CRUD for Cloudinary"""
 
-from model import db, User, Photo, Like, Comment
+from model import db, User, Photo, Like, Comment, connect_to_db
 
 def create_user(username, email, password, fname, lname):
     """Create and return a new user."""
@@ -28,7 +28,7 @@ def create_comment(comment,user_id,photo_id):
 
     return comment
 
-# if __name__ == "__main__":
-#     from server import app
+if __name__ == "__main__":
+    from server import app
 
-#     connect_to_db(app)
+    connect_to_db(app)

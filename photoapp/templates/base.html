@@ -2,23 +2,27 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cloudinary Project</title>
+    <title>ShutterSpace</title>
     
     <!-- Bootstrap CSS -->
     <script src="https://kit.fontawesome.com/e6be9a0126.js" crossorigin="anonymous"></script>
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap">
+          href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/static/site.css">
 </head>
 <body>
 
-  <div id ="navbar" class="navbar navbar-expand-xxl bg-light, sticky-top, navbar sticky-top">
-    <a class="navbar-brand" href="{{ url_for('homepage') }}">Shutterspace</a> 
+  <div id ="navbar" class="navbar navbar-expand-xxl, sticky-top, navbar sticky-top">
+    <a class="navbar-brand" href="{{ url_for('homepage') }}">Shutterspace <br>
+      </a> 
+      <span class="saying"> Share your adventures through your lense</span>
+    <!-- <p class="saying text-start">Share your adventures through your lense</p> -->
         {% if current_user.is_authenticated %}
        
         
-        <ul class = "nav-items"> 
+        <ul class = "nav-items text-left"> 
           
           <li>
             <div class = "profile nav-item">

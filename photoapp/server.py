@@ -9,6 +9,9 @@ import cloudinary.uploader
 
 
 app = Flask(__name__)
+with app.app_context():
+    # within this block, current_app points to app.
+    print (app.name)
 app.config['SECRET_KEY'] = '4569740e2dac685f61cbd9085d0cdb16'
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///cloudinary"
 
@@ -186,7 +189,9 @@ def account(user_id):
     user = User.query.get(user_id)
     
     photos= Photo.query.filter(Photo.user_id==user_id).all()
+    print(f'USER######### {user}')
     if current_user.is_authenticated:
+        print(f'*********TYPE {type(photos)}')
         return render_template('account.html', title='Account', photos=photos,user=user)
     else:
          return redirect(url_for('login'))

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Cloudinary Demo Homepage{% endblock %}
 {% block content %}
-
+<div class="container text-center">
    {% for photo in all_photos%}
-   <div class="container text-center">
+   
     <div class="row">
       <div class="column-2">
       </div>
-      <div class="column-8 text-center">
+      <div class="column-8 text-center main-feed">
    <div class="card "  style="width: 432px; height: auto;">
     <div class="card-body">
     <div class="card-header text-start" style="background-color:white;">
@@ -26,11 +26,11 @@
     
             {% endif %} 
             {% if photo.comment|length > 0 %}
-            <a class="view-comment-link" href="{{ url_for('photo', photo_id=photo.id)}}"
+            <a class="view-comment-link" href="{{ url_for('photo', photo_id=photo.id)}}">
             <div>View {{photo.comment|length}} comments</div>
             </a>  
             {% else %}
-            <a class="view-comment-link" href="{{ url_for('photo', photo_id=photo.id)}}"
+            <a class="view-comment-link" href="{{ url_for('photo', photo_id=photo.id)}}">
             <div>Add comment</div>
             </a>  
             {% endif %}    
@@ -44,31 +44,32 @@
 </div>
 </div>
 
-</div>  
-{% endfor %} 
 
+{% endfor %} 
 
 <div class="recommended-posts text-center">
    <h2>Suggested Posts</h2>
    {% for follow in recommended_follows %}
-   <div class="container text-center">
+   
+   <!-- <div class="container text-center"> -->
+   
     <div class="row">
       <div class="column-2">
 
       </div>
-      <div class="column-8">
-   <div class="card" style="width: 432px; height: auto;">
+  <div class="column-8 suggested-card">
+   <div class="card text-center " style="width: 432px; height: auto;">
     <div class="card-body">
     <div class="card-header text-start" style="background-color:white ;">
-      <img id="profile-img" src="{{follow.user.profile_pic_url}}" >
-      {{follow.user.username}}
-       <!-- <div class="follow"> -->
+      <img class="d-inline" id="profile-img" src="{{follow.user.profile_pic_url}}" />
+      <p class="d-inline" style="color:black;padding-right: 5px;">{{follow.user.username}}</p>
+       <div class="follow d-inline">
         {% if current_user.id != follow.user_id and follow.user_id not in following_list %}
-        <i class="fa-solid fa-user-plus fa-xs followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
+        <i style="color:black;" class="fa-solid fa-user-plus fa-sm followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
         {% elif current_user.id != follow.user_id and follow.user_id in following_list %}
-        <i class="fa-solid fa-user-minus fa-xs followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
+        <i class="fa-solid fa-user-minus fa-sm followBtnStatus" id ="follow-btn-{{follow.user_id}}"></i>
         {% endif %}    
-       <!-- </div> -->
+       </div>
     </div>
     <div>
       <a href="{{ url_for('photo', photo_id=follow.id)}}"><img class="card-img-top home-photos" id="images" src ="{{follow.url}}"> 
@@ -87,11 +88,11 @@
       {% endif %} 
 
       {% if follow.comment|length > 0 %}
-      <a class="view-comment-link"href="{{ url_for('photo', photo_id=follow.id)}}"
+      <a class="view-comment-link"href="{{ url_for('photo', photo_id=follow.id)}}">
       <div>View {{follow.comment|length}} comments</div>
       </a>  
       {% else %}
-      <a class="view-comment-link" href="{{ url_for('photo', photo_id=follow.id)}}"
+      <a class="view-comment-link" href="{{ url_for('photo', photo_id=follow.id)}}">
       <div>Add comment</div>
       </a>  
       {% endif %}    
@@ -101,10 +102,14 @@
     </div>
    </div>
   </div>
-   {% endfor %} 
+  <div class="column-2">
+
   </div>
 </div>
-</div>
+   {% endfor %} 
+  <!-- </div> -->
 
+</div>
+</div>  
 <script src="/static/index.js"></script>
 {% endblock %}

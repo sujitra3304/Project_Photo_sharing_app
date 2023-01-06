@@ -13,9 +13,11 @@ function homepageLike(evt) {
         console.log(data)
         if (data["liked"] != "True") {
             el.className = "fa-regular fa-heart";
+            el.style.color="red";
         }
         else  {
             el.className = "fa-solid fa-heart";
+            el.style.color="red";
           }
 })
 }
@@ -38,8 +40,10 @@ function like() {
         
         if (data["liked"] === "True") {
           likeButton.className = "fa-solid fa-heart";
+          likeButton.style.color = "red";
         } else {
           likeButton.className = "fa-regular fa-heart";
+          likeButton.style.color = "red";
         }
       })
   }

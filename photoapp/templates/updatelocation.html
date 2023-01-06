@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-
+<div class="container text-left">
 <form action="/update_location" methods="POST" >
 <input id="autocomplete" name="address" placeholder="Enter location" type="text" />
-<p id="output"> data</p>
-<input id="lat" name="lat" placeholder="lat"> 
-<input id="lng" name="lng" placeholder="lng"> 
-<input id="name" name="name" placeholder="name">
-<input id="place-id" name="place-id" placeholder="placeId"> 
-<input id="photo-id" name="photoId" placeholder="photoId"> 
+<p id="output"></p>
+<input class="d-none" id="lat" name="lat" placeholder="lat"> 
+<input class="d-none" id="lng" name="lng" placeholder="lng"> 
+<input class="d-none" id="name" name="name" placeholder="name">
+<input class="d-none" id="place-id" name="place-id" placeholder="placeId"> 
+<input class="d-none" id="photo-id" name="photoId" placeholder="photoId"> 
 <br> 
 <input id="submit-location" type="submit">
 </form>
 
 <div id="map"></div>
+</div>
 <script src="/static/index.js"></script>
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMQe7y-1ty3UxxRzj3JQ-MHM4gEcetUBI&libraries=places&callback=initAutocomplete">

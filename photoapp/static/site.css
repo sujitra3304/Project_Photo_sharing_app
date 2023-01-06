@@ -18,25 +18,36 @@ body {
   }
 
   .navbar-brand{
-    font-family: 'Rubik Bubbles';
-    margin-left: 0px;
+    font-family: 'Dancing Script';
+    margin-left: 15px;
     margin-right: 25vw;
     color:pink;
     font-size: 3vw;
-    padding-left: 5%;
-    padding-bottom: 5%;
+    padding-left:0%;
+    padding-bottom: 0%;
     padding-top: 0%;
+  }
+  .saying{
+    font-family: 'Kalam ';
+    font-size: 22px;
+    font-style: italic;
+    color:white;
+    margin-bottom: 0%;
+    margin-right: 50vw ;
+    margin-left: 7vw;
   }
   .nav-items {
     margin-right: 2%;
-    margin-left: 20%;
+    margin-left: 70%;
     list-style-type: none;
-    margin-bottom: 4rem;
+    margin-bottom: 0%;
+    margin-top: 0%;
   }
   .nav-item{
-    color:black;
+    color:white;
     list-style-type: none;
-
+    margin-bottom: 0%;
+    margin-top: 0%;
   }
   li {
     float:right;
@@ -63,13 +74,15 @@ body {
     margin:auto;
     height: 400px; /* The height is 400 pixels */
     width: 80%; /* The width is the width of the web page */
+    margin-bottom: 5vw;
   }
-  
   #infoWinImg {
     height: 150px;
   }
   #account-map-header{
-    margin:auto
+    color:white;
+    font-family: 'Kalam ';
+    margin:auto;
   }
   .home-photos {
     width: 500 px;
@@ -95,17 +108,32 @@ body {
   float:left;
   margin-top: 5px ;
   margin-left: 5px;
-  margin-right: 0px;
+  margin-right: 10px;
   margin-bottom: 5px;
   padding:0px,12px,6px
 }
 .view-comment-link{
   margin-top: 0px;
-  margin-right: 5vw;
+  margin-right: 1vw;
+  margin-left: 5px;
   margin-bottom: 20px;
-  padding-left: 5px;
+  padding-left: 0px;
 }
-
+.recommended-posts{
+font-family: Kalam;
+color:white;
+/* float:center; */
+margin-right:60vw ;
+}
+.suggested-card{
+  padding-left: 1vw;
+}
+.main-feed{
+  font-family: Kalam;
+}
+/* .followBtnStatus{
+  margin-left: 10vw;
+} */
 /* photo page */
 /* .photo-username{ 
   margin-right: 40%;
@@ -149,25 +177,30 @@ body {
   margin-left: 4vw;
 }
 .comment-input{
-  width:100%;
+  width:50%;
   margin-left: 0vw;
+}
+.comment-user-name{
+  margin-bottom:0%;
 }
 #submit-comment{
   margin-top: 5px;
-  margin-left: 10vw;
+  margin-left: 22vw;
   padding-top:0px;
 }
 .speech-bubble {
+  padding:2px;
   position: relative;
   background: #00aabb;
   border-radius: .4em;
-  width:300px;
-  display:flex;
+  width:350px;
+  height: 66px;
+  display: flex;
   flex-direction:column;
   align-items:center;
   color:white;
 }
-.speech-bubble:after {
+/* .speech-bubble:after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -179,10 +212,14 @@ body {
   border-bottom: 0;
   margin-left: 0px;
   margin-bottom: 0px;
-}
+} */
 .comment-date{
-  margin-left: 13vw;
+  margin-left: 15vw;
+  margin-bottom: 20vw;
   font-size: smaller;
+}
+#comment{
+  font-size: 20px;
 }
 /* login page */
 .login-input{

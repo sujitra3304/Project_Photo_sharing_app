@@ -12,7 +12,7 @@
         <div class="col-8">
         <div class="user-name">
         <img class="photo-user-profile" id="profile-img" style = width:30px; src="{{photo.user.profile_pic_url}}">
-        <a class="mr-2" href="{{url_for('account',user_id=photo.user.id)}}">{{ photo.user.username }} 
+        <a style="font-family: 'Kalam';color:white;" class="mr-2" href="{{url_for('account',user_id=photo.user.id)}}">{{ photo.user.username }} 
             
         </a>
     
@@ -25,7 +25,7 @@
         
         
         </div>
-        <img class="photo-img" src = "{{photo.url}}">
+        <img class="photo-img" src = "{{photo.url}}"/>
     
        
         <br>
@@ -55,18 +55,22 @@
         <br>
         <br>
         <div class="container text-start comment-section"> 
+            {% if comments|length > 0 %}
             <p class="comment">
-                <button class="btn btn-link" type="button" role="button" data-bs-toggle="collapse" data-bs-target="#collapseComments" aria-expanded="false" aria-controls="collapseComments">
+                <button style="font-family: 'Kalam';" class="btn btn-link" type="button" role="button" data-bs-toggle="collapse" data-bs-target="#collapseComments" aria-expanded="false" aria-controls="collapseComments">
                     View Comments
                   </button>
              </p>
+            {% endif %}
             {% for comment in comments %}
-            <div class="collapse show" id="collapseComments">
-            <p>{{comment.user.username}}:
-                <div class="speech-bubble text-start">
-                {{comment.comment}} 
-                <br>
+            <div class="collapse" id="collapseComments">
+            <p class="comment-user-name">{{comment.user.username}}:
+                <div style="font-family: 'Kalam';"class="speech-bubble text-start">
+                <p id="comment">{{comment.comment}}
+                </p>
                 <span class="text-right text-muted comment-date">{{comment.comment_date}}</span>
+                <br>
+                
                 </div>
                 {% if comment.user_id == current_user.id%}
                 <button type="button" class="btn btn-link btn-sm" id="delete-comment-{{comment.id}}">Delete</button>
